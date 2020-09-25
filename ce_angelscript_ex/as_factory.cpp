@@ -32,10 +32,13 @@
 #include "ce_angelscript/add_on/scriptmath/scriptmath.h"
 #include "ce_angelscript/add_on/scriptmath/scriptmathcomplex.h"
 #include "ce_angelscript/add_on/aatc/aatc.hpp"
-#include "ASOStream.h"
-#include "ASIStream.h"
-#include "ASStreams.h"
+//#include "ASOStream.h"
+//#include "ASIStream.h"
+//#include "ASStreams.h"
 #include "as_assert.h"
+#include "as_ostream.h"
+#include "as_istream.h"
+#include "as_args.h"
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -177,17 +180,29 @@ string as_factory::GetOutSubDir()
    return singleton()->m_outsubdir;
 }
 
+as_args* as_factory::GetArgs()
+{
+   return new as_args(singleton()->m_args);
+}
 
 as_factory::as_factory()
 : m_echo_ref(false)
 , m_line_number(0)
 , m_col_number(0)
+, m_args(std::make_shared<as_args_impl>())
 {
+   if(m_singleton) throw std::logic_error("as_factory singleton already created");
+   m_singleton = this;
+
    // Create the script engine
    m_engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 
    // Set the message callback to receive information on errors in human readable form.
    int r = m_engine->SetMessageCallback(asFUNCTION(MessageCallback), 0, asCALL_CDECL); assert( r >= 0 );
+
+   // http://www.angelcode.com/angelscript/sdk/docs/manual/doc_adv_custom_options.html#doc_adv_custom_options_lang_mod
+   // disable virtual property accessors all together by setting the engine property to 0
+   m_engine->SetEngineProperty(asEP_PROPERTY_ACCESSOR_MODE,0);
 
    // AngelScript doesn't have a built-in string type, as there is no definite standard
    // string type for C++ applications. Every developer is free to register it's own string type.
@@ -214,9 +229,9 @@ as_factory::as_factory()
    RegisterScriptMath(m_engine);
  // Temporarily removed, crashes  RegisterScriptMathComplex(m_engine);
 
-   RegisterStreams(m_engine);
-   RegisterIStream(m_engine);
-   RegisterOStream(m_engine);
+   // register as_ostream/as_istream providing the cout/cin stream objects
+   as_ostream::InstallType(m_engine);
+   as_istream::InstallType(m_engine);
 
    // register aatc container classes
 //   aatc::RegisterAllContainers(m_engine);  // for the complete set
@@ -239,6 +254,19 @@ as_factory::as_factory()
    m_engine->RegisterGlobalFunction("string GetInputFullPath()",      asFUNCTION(GetInputFullPath), asCALL_CDECL); assert( r >= 0 );
    m_engine->RegisterGlobalFunction("string GetInputFullPathNoExt()", asFUNCTION(GetInputFullPathNoExt), asCALL_CDECL); assert( r >= 0 );
    m_engine->RegisterGlobalFunction("string GetOutputFullPath(const string &in ext)", asFUNCTION(GetOutputFullPath), asCALL_CDECL); assert( r >= 0 );
+
+
+
+   // enable throw and getExceptionInfo
+   RegisterExceptionRoutines(m_engine);
+
+}
+
+void as_factory::RegisterGlobalGetArgs()
+{
+   // input arguments to script
+   as_args::InstallType(m_engine);
+   int r = m_engine->RegisterGlobalFunction("as_args@ GetArgs()", asFUNCTION(GetArgs), asCALL_CDECL); assert( r >= 0 );
 }
 
 void as_factory::SetLibraryIncludePath(const string& path)

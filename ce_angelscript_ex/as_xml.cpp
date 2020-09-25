@@ -93,7 +93,7 @@ std::string as_xml::fix_array_types(const std::string& signature)
    for(const auto& array_type : m_array_types) {
       std::string old_string = array_type+"[]";
       std::string new_string = "array<"+array_type+">";
-      replace_substring(signature_copy,old_string,new_string);
+      replace_substring_inplace(signature_copy,old_string,new_string);
    }
    return std::move(signature_copy);
 }

@@ -74,7 +74,7 @@
 				<Option output=".cmp/gcc/bin/Debug/cf_syslibd" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".cmp/gcc/obj/Debug/" />
 				<Option type="3" />
-				<Option compiler="gcc" />
+				<Option compiler="gcc_generic" />
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
@@ -99,7 +99,7 @@
 				<Option output=".cmp/gcc/bin/Release/cf_syslib" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".cmp/gcc/obj/Release/" />
 				<Option type="3" />
-				<Option compiler="gcc" />
+				<Option compiler="gcc_generic" />
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
@@ -134,15 +134,16 @@
 		<Unit filename="cf_syslib_config.h" />
 		<Unit filename="replace_substring.cpp" />
 		<Unit filename="replace_substring.h" />
+		<Unit filename="string_trim.cpp" />
+		<Unit filename="string_trim.h" />
+		<Unit filename="stringtokens.cpp" />
+		<Unit filename="stringtokens.h" />
 		<Unit filename="xml_node.cpp" />
 		<Unit filename="xml_node.h" />
 		<Unit filename="xml_tree.cpp" />
 		<Unit filename="xml_tree.h" />
 		<Extensions>
-			<code_completion />
-			<envvars />
 			<lib_finder disable_auto="1" />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

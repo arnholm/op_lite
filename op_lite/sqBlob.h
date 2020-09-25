@@ -59,7 +59,7 @@ public:
    template <typename T>
    sqBlob(const vector<T>& vec, size_t ctyp);
 
-   /// Interpret the blob as a vector of given native type
+   /// Unpack the blob as a vector of given native type
    /*!  \param  vec  vector returned */
    template <typename T>
    bool get_vector(vector<T>& vec) const;
@@ -75,6 +75,10 @@ public:
         \param  data uncompressed data
         \param  nbytes length of data buffer  */
    void pack_blob(size_t ctyp, const unsigned char* data, size_t nbytes);
+
+   /// return raw blob data as stored, without any unpacking
+   /*! \return raw blob data as stored, without any unpacking */
+   const vector<unsigned char>& raw_data() const { return m_data; }
 
 private:
    /// \privatesection (hidden in documentation)

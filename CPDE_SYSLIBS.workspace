@@ -2,6 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="CPDE_SYSLIBS">
 		<Project filename="cf_syslib/cf_syslib.cbp" />
+		<Project filename="cf_serial/cf_serial.cbp" />
 		<Project filename="op_lite/op_lite.cbp" />
 		<Project filename="ce_angelscript/ce_angelscript.cbp" />
 		<Project filename="ce_angelscript_ex/ce_angelscript_ex.cbp">
@@ -10,6 +11,7 @@
 		</Project>
 		<Project filename="BUILD_ALL/BUILD_ALL.cbp">
 			<Depends filename="cf_syslib/cf_syslib.cbp" />
+			<Depends filename="cf_serial/cf_serial.cbp" />
 			<Depends filename="op_lite/op_lite.cbp" />
 			<Depends filename="ce_angelscript_ex/ce_angelscript_ex.cbp" />
 		</Project>

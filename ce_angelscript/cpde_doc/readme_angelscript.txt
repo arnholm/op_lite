@@ -58,14 +58,15 @@ Steps to create the project file:
 	  MSVC_TOOLCHAIN.ASM is set to "cpde_dummy_compiler.exe" for x86 (32bit)
 	  
 8. Build CPDE as usual
-   See User Manual in ce_angelscript\angelscript_2.30.2\sdk\docs
+   See User Manual in ce_angelscript\angelscript_<version>\sdk\docs
    
 9. How to upgrade core version of angelscript
    9.1 remove all source files from project file
-   9.2 remove everything under angelscript_2.31.0 (including that folder) from source control and delete files.
+   9.2 remove everything under angelscript_<version> (including that folder) from source control and delete files.
    9.3 copy in new files files from new version. Add to source control.
    9.4 add source files to project from folders sdk/angelscript and sdk/add_on.
    9.5 add aatc source files to stk/add_on as described in point 5
-   9.6 Repeat steps [3-7] to configure the new version
+   9.6 remove samples folder from project angelscript_<version>/sdk/angelscript/samples
+   9.7 Repeat steps [3-7] to configure the new version
          
    

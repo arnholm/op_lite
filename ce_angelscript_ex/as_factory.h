@@ -23,14 +23,18 @@
 // A PARTICULAR PURPOSE.
 // EndLicense:
 
-#ifndef as_factory_H
-#define as_factory_H
+#ifndef AS_FACTORY_H
+#define AS_FACTORY_H
 
 #include "ce_angelscript/ce_angelscript.h"
 #include <string>
 #include <map>
 #include <set>
+#include <memory>
 using namespace std;
+
+class as_args;
+#include "as_args_impl.h"
 
 class as_factory {
 public:
@@ -46,6 +50,9 @@ public:
 
    // set the path to the root library folder, set empty path if no library folder to be used
    void SetLibraryIncludePath(const string& path);
+
+   // Application calls this to register the global GetArgs() function
+   void RegisterGlobalGetArgs();
 
    // Load and run a complete script from file. Call in try/catch block
    bool RunScriptFile(const string& path, const string& outsubdir, const string& module_name);
@@ -74,6 +81,11 @@ public:
    static string GetOutputFullPath(const string& ext); // returns the full file path of the output file with given extension
    static string GetOutSubDir();                       // returns output subdirectory specification
 
+   static as_args* GetArgs();     // returns script object with script input arguments;
+
+   // return the internal arguments parser
+   shared_ptr<as_args_impl> get_args_impl() { return m_args; }
+
 private:
    as_factory();
    virtual ~as_factory();
@@ -81,6 +93,8 @@ private:
    string             m_library_path; // path to library folder or empty string of none
    string             m_script_path;  // path to current script file
    string             m_outsubdir;    // path to script output subdirectory (may be empty)
+
+   shared_ptr<as_args_impl> m_args;   // input arguments to script
 
    InstanceCountMap   m_instance_count;
    bool               m_echo_ref;
@@ -95,4 +109,5 @@ private:
 
 inline as_factory* asF() { return as_factory::singleton(); }
 
-#endif // as_factory_H
+#endif // AS_FACTORY_H
+
