@@ -1,3 +1,14 @@
+
+# CMake
+
+build
+
+# VS Code
+
+.vscode
+
+# Code::Blocks
+
 *.layout
 *.depend
 *.pdb
