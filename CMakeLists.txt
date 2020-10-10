@@ -1,41 +1,50 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.8)
+
+#--------------------------------------------------------------------------------
+# Main CMakeLists file for the cpde_syslibs libraries.
+#
+# Recommended use:
+#   $ mkdir build && cd build
+#   $ conan install .. -s build_type=Debug
+#   $ cmake --G"Visual Studio 16 2019" -A x64
+#--------------------------------------------------------------------------------
 
 project(cf_syslibs)
 
-#
-# Macros
-#
-macro(remove_cxx_flag flag)
-  string(REPLACE "${flag}" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-endmacro()
+#--------------------------------------------------------------------------------
+# Setup project.
+# Defines common parameters for all libraries, such as compiler options.
+#--------------------------------------------------------------------------------
+set(BUILDSYSTEM_DIR "${CMAKE_CURRENT_LIST_DIR}/buildsystem/cmake")
+include(${BUILDSYSTEM_DIR}/main.cmake)
+main_cmake_setup()
 
-#
-# Options
-#
-option(BUILD_SHARED_LIBS "Build shared libraries if ON (default)" ON)
-
-#
-# Target naming and output directories
-#
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_DEBUG_POSTFIX d)
-
-
-#set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_SANDARD_REQUIRED True)
-set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
-if(MSVC)
-    add_compile_options("/MD" "/Ox" "/GF" "/EHsc" "/W3" 
-        "/D_CRT_SECURE_NO_WARNINGS" 
-        "/D_CRT_NONSTDC_NO_DEPRECATE"
-        "/D_CRT_SECURE_DEPRECATE"
-    )
-else()
-    remove_cxx_flag("-O3")
-    add_compile_options("-W" "-std=c++0x" "-fexceptions" "-Os" "-DNPOCH" -pipe) 
+#--------------------------------------------------------------------------------
+# Configure conan packages
+# Prerequisite: You need to call `conan install` before `cmake`.
+#--------------------------------------------------------------------------------
+if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS)
+ else()
+    message(FATAL_ERROR "Conan packages not configured. Run `conan install`")
 endif()
 
+#--------------------------------------------------------------------------------
+# Boost. Expect to find. Sets some aliases used later.
+#--------------------------------------------------------------------------------
+find_package("Boost" REQUIRED)
+
+#--------------------------------------------------------------------------------
+# Msgpack. Ignore if not found. Using Conan-variables anyway.
+#--------------------------------------------------------------------------------
+find_package("msgpack" QUIET)
+
+#--------------------------------------------------------------------------------
+# Add source directories
+#--------------------------------------------------------------------------------
 add_subdirectory(cf_syslib)
+add_subdirectory(cf_serial)
+add_subdirectory(op_lite)
+add_subdirectory(ce_angelscript)
 
