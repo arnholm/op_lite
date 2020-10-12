@@ -110,7 +110,6 @@ set(_lzmalib_sources_msvc
 )
 
 source_group(lzmalib          FILES ${_lzmalib_sources})
-source_group(lzmalib_WIN_ONLY FILES ${_lzmalib_sources_msvc})
 source_group(miniz            FILES ${_miniz_sources})
 source_group(sqlite3          FILES ${_sqlite_sources})
 source_group(sqLayer          FILES ${_sqLayer_sources})
@@ -135,9 +134,12 @@ target_sources(${LIBRARY_NAME}
 )
 
 if (MSVC)
+   source_group(lzmalib_WIN_ONLY FILES ${_lzmalib_sources_msvc})
    target_sources(${LIBRARY_NAME}
       PRIVATE
       ${_lzmalib_sources_msvc})
+else()
+   add_compile_definitions(_7ZIP_ST)
 endif()
 
 target_include_directories(${LIBRARY_NAME}
