@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.13)
+
 macro(main_cmake_setup)
 
     # --------------------------------------------------------------------------
@@ -29,7 +31,34 @@ macro(main_cmake_setup)
         set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:msvcrtd.lib")
         set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /INCREMENTAL:NO")
 
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG:full /OPT:REF /OPT:ICF /Zi")     
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG:full /OPT:REF /OPT:ICF")     
+    endif()
+
+    # Fix x64 issues on Linux
+    if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND UNIX AND NOT APPLE)
+        target_compile_options(${LIBRARY_NAME} PRIVATE -fPIC)
+    endif()
+
+    # --------------------------------------------------------------------------
+    # Install settings
+    # --------------------------------------------------------------------------
+
+    # Set the environmental variable CPDE_USR if not set already
+    if (NOT DEFINED ENV{CPDE_USR})
+        set(ENV{CPDE_USR} ${CMAKE_BINARY_DIR}/install)
+    endif()
+
+    # Installation prefix accordingly.
+    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        if (DEFINED ENV{CPDE_USR})
+            set(CMAKE_INSTALL_PREFIX
+                 "$ENV{CPDE_USR}" CACHE PATH
+                 "Default installation prefix set to CPDE_USR env var" FORCE)
+        else()
+            set(CMAKE_INSTALL_PREFIX
+                 "$ENV{CPDE_USR}" CACHE PATH
+                 "Default installation prefix set to ./install" FORCE)
+        endif()
     endif()
 
 endmacro()

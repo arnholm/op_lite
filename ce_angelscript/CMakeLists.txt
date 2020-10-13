@@ -1,21 +1,26 @@
 cmake_minimum_required(VERSION 3.13)
+project(ce_angelscript)
 
-set(LIBRARY_NAME ce_angelscript)
+#--------------------------------------------------------------------------------
+# Set the name of the target if not already defined
+#--------------------------------------------------------------------------------
+if(NOT TARGET_CE_ANGELSCRIPT)
+    set(TARGET_CE_ANGELSCRIPT ce_angelscript)
+endif()
 
-project(${LIBRARY_NAME})
-
+message(STATUS "Current Binary Dir " ${CMAKE_CURRENT_BINARY_DIR})
+#--------------------------------------------------------------------------------
+# Optionally include add-ons
+#--------------------------------------------------------------------------------
 option(ANGELSCRIPT_ADD_ON "Include the Angelscript add-on packages in build" ON)
 
+#--------------------------------------------------------------------------------
+# Define source groups
+#--------------------------------------------------------------------------------
 set(ANGELSCRIPT_VERSION 2.33.0)
-set(ANGELSCRIPT_PATH ${PROJECT_SOURCE_DIR}/angelscript_${ANGELSCRIPT_VERSION}/sdk/angelscript)
-set(ANGELSCRIPT_ADD_ON_PATH ${PROJECT_SOURCE_DIR}/angelscript_${ANGELSCRIPT_VERSION}/sdk/add_on)
-
-add_compile_definitions(CE_ANGELSCRIPT_IMPLEMENTATION)
-add_compile_definitions(AS_USE_STLNAMES=1)
-add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-
-find_package(Threads)
-
+set(ANGELSCRIPT_ROOT ${PROJECT_SOURCE_DIR}/angelscript_${ANGELSCRIPT_VERSION}/sdk)
+set(ANGELSCRIPT_PATH        ${ANGELSCRIPT_ROOT}/angelscript)
+set(ANGELSCRIPT_ADD_ON_PATH ${ANGELSCRIPT_ROOT}/add_on)
 set(ANGELSCRIPT_HEADERS
     ${ANGELSCRIPT_PATH}/include/angelscript.h
     ${ANGELSCRIPT_PATH}/source/as_array.h
@@ -169,6 +174,8 @@ if(ANGELSCRIPT_ADD_ON)
    )
 endif()
 
+# Assembly code for MSVC and architecture x86_64
+
 if(MSVC AND CMAKE_CL_64)
     enable_language(ASM_MASM)
     if(CMAKE_ASM_MASM_COMPILER_WORKS)
@@ -177,6 +184,8 @@ if(MSVC AND CMAKE_CL_64)
         message(FATAL ERROR "MSVC x86_64 target requires a working assembler")
     endif()
 endif()
+
+# Assembly code for ARM target
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^arm")
     enable_language(ASM)
@@ -188,21 +197,67 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^arm")
     endif()
 endif()
 
-add_library(${LIBRARY_NAME} ${ANGELSCRIPT_SOURCE} ${ANGELSCRIPT_HEADERS} ${ANGELSCRIPT_ADD_ON_SOURCE})
+#--------------------------------------------------------------------------------
+# Build
+#--------------------------------------------------------------------------------
 
-target_include_directories(${LIBRARY_NAME}
-   PRIVATE
-   ${ANGELSCRIPT_PATH}/include
+add_library(${TARGET_CE_ANGELSCRIPT} STATIC
+    ${ANGELSCRIPT_SOURCE}
+    ${ANGELSCRIPT_HEADERS}
+    ${ANGELSCRIPT_ADD_ON_SOURCE})
+
+target_compile_definitions(${TARGET_CE_ANGELSCRIPT} PRIVATE CE_ANGELSCRIPT_IMPLEMENTATION)
+target_compile_definitions(${TARGET_CE_ANGELSCRIPT} PRIVATE AS_NO_EXCEPTIONS)
+target_compile_definitions(${TARGET_CE_ANGELSCRIPT} PRIVATE AS_USE_STLNAMES=1)
+target_compile_definitions(${TARGET_CE_ANGELSCRIPT} PRIVATE _CRT_SECURE_NO_WARNINGS)
+
+find_package(Threads)
+
+target_link_libraries(${TARGET_CE_ANGELSCRIPT} Threads::Threads)
+
+# Add dependency to include directories.
+#   The interface to this library is defined through the file
+#   ce_angelscript.h found in ${ANGELSCRIPT_ROOT}.
+#   The add-on's include angelscript.h found under {ANGELSCRIPT_PATH}/include.
+
+file(COPY ${ANGELSCRIPT_ROOT}/ce_angelscript.h    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/ce_angelscript)
+file(COPY ${ANGELSCRIPT_ROOT}/angelscript/include DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/ce_angelscript/angelscript)
+file(COPY ${ANGELSCRIPT_ROOT}/add_on              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/ce_angelscript
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+target_include_directories(${TARGET_CE_ANGELSCRIPT}
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE
+    ${ANGELSCRIPT_PATH}/include
 )
 
-if(MSVC)
-    target_compile_definitions(${LIBRARY_NAME} PRIVATE CRT_SECURE_NO_WARNINGS)    
-endif()
-target_compile_definitions(${LIBRARY_NAME} PRIVATE AS_NO_EXCEPTIONS)
+#--------------------------------------------------------------------------------
+# Installation
+#--------------------------------------------------------------------------------
 
-# Fix x64 issues on Linux
-if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND UNIX AND NOT APPLE)
-    target_compile_options(${LIBRARY_NAME} PRIVATE -fPIC)
-endif()
+install(TARGETS ${TARGET_CE_ANGELSCRIPT}
+   CONFIGURATIONS Debug Release
+   RUNTIME DESTINATION bin
+   LIBRARY DESTINATION lib
+   ARCHIVE DESTINATION lib
+)
 
-target_link_libraries(${LIBRARY_NAME} Threads::Threads)
+install(DIRECTORY ${ANGELSCRIPT_ROOT}/ ${ANGELSCRIPT_ROOT}/add_on
+   DESTINATION include/ce_angelscript
+   FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+   PATTERN ".cmp" EXCLUDE
+   PATTERN "docs"  EXCLUDE
+   PATTERN "samples"  EXCLUDE
+   PATTERN "angelscript/projects" EXCLUDE
+   PATTERN "angelscript/lib" EXCLUDE
+)
+
+#--------------------------------------------------------------------------------
+# Tidy up
+#--------------------------------------------------------------------------------
+unset(ANGELSCRIPT_SOURCE)
+unset(ANGELSCRIPT_HEADERS)
+unset(ANGELSCRIPT_ADD_ON_SOURCE)
+
