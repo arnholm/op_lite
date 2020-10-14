@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.13)
-project(ce_angelscript)
 
 #--------------------------------------------------------------------------------
 # Set the name of the target if not already defined
@@ -18,7 +17,7 @@ option(ANGELSCRIPT_ADD_ON "Include the Angelscript add-on packages in build" ON)
 # Define source groups
 #--------------------------------------------------------------------------------
 set(ANGELSCRIPT_VERSION 2.33.0)
-set(ANGELSCRIPT_ROOT ${PROJECT_SOURCE_DIR}/angelscript_${ANGELSCRIPT_VERSION}/sdk)
+set(ANGELSCRIPT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/angelscript_${ANGELSCRIPT_VERSION}/sdk)
 set(ANGELSCRIPT_PATH        ${ANGELSCRIPT_ROOT}/angelscript)
 set(ANGELSCRIPT_ADD_ON_PATH ${ANGELSCRIPT_ROOT}/add_on)
 set(ANGELSCRIPT_HEADERS
@@ -244,7 +243,7 @@ install(TARGETS ${TARGET_CE_ANGELSCRIPT}
    ARCHIVE DESTINATION lib
 )
 
-install(DIRECTORY ${ANGELSCRIPT_ROOT}/ ${ANGELSCRIPT_ROOT}/add_on
+install(DIRECTORY ${ANGELSCRIPT_ROOT}/
    DESTINATION include/ce_angelscript
    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
    PATTERN ".cmp" EXCLUDE

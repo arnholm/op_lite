@@ -1,6 +1,16 @@
 #--------------------------------------------------------------------------------
 # Main CMakeLists file for the cpde_syslibs libraries.
 #
+# The cpde_syslibs are a collection of libraries which are not entirely dependent
+# of each other. This makefile build all the targets.
+# 
+# The followings projects/sub-projects are defined:
+# project_cf_syslibs:   This main project
+# project_cf_syslib:    Builds the cf_syslib library
+# project_cf_serial:    Builds the cf_serial library
+# project_op_lite:      Builds the op_lite library
+# project_ce_angelscript: Builds the ce_angelscript and ce_angelscript_ex libraries
+#
 # Recommended use:
 #   $ mkdir build && cd build
 #   $ conan install .. -s build_type=Debug
@@ -9,7 +19,7 @@
 #--------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.8)
-project(cf_syslibs)
+project(project_cf_syslibs)
 
 #--------------------------------------------------------------------------------
 # Setup project.
@@ -52,16 +62,23 @@ set(TARGET_CE_ANGELSCRIPT     "ce_angelscript_static")
 set(TARGET_CE_ANGELSCRIPT_EX  "ce_angelscript_ex_static")
 
 #--------------------------------------------------------------------------------
-# Add sub directories, one for each target
+# Define sub-projects. Add sub directories, one for each target.
 #--------------------------------------------------------------------------------
+project(project_cf_syslib)
 add_subdirectory(cf_syslib)
+
+project(project_cf_serial)
 add_subdirectory(cf_serial)
+
+project(project_op_lite)
 add_subdirectory(op_lite)
+
+project(project_ce_angelscript)
 add_subdirectory(ce_angelscript)
 add_subdirectory(ce_angelscript_ex)
 
 #--------------------------------------------------------------------------------
-# Setup project's dependencies
+# Setup target's dependencies
 #--------------------------------------------------------------------------------
 add_dependencies(${TARGET_CE_ANGELSCRIPT_EX}
     ${TARGET_CE_ANGELSCRIPT} ${TARGET_CF_SYSLIB}

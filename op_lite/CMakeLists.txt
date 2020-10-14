@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.13)
-project(op_lite)
 
 #--------------------------------------------------------------------------------
 # Set the name of the target if not already defined
@@ -180,7 +179,7 @@ install(TARGETS ${TARGET_OP_LITE}
    ARCHIVE DESTINATION lib
 )
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
    DESTINATION include/op_lite
    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
    PATTERN ".cmp" EXCLUDE
