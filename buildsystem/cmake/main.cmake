@@ -36,7 +36,7 @@ macro(main_cmake_setup)
 
     # Fix x64 issues on Linux
     if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64" AND UNIX AND NOT APPLE)
-        target_compile_options(${LIBRARY_NAME} PRIVATE -fPIC)
+        add_compile_options(-fPIC)
     endif()
 
     # --------------------------------------------------------------------------
