@@ -6,6 +6,11 @@ macro(main_cmake_setup)
     # Build settings
     # --------------------------------------------------------------------------
 
+    # Default is build-type Release
+    if (NOT CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE Release)
+    endif()
+
     # Default is to build shared libraries
     option(BUILD_SHARED_LIBS "Build shared libraries if ON (default)" ON)
 
