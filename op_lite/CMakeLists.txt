@@ -128,6 +128,10 @@ set_source_files_properties( miniz/miniz.c PROPERTIES HEADER_FILE_ONLY TRUE)
 
 add_library(${TARGET_OP_LITE} "")
 
+if (NOT BUILD_SHARED_LIB)
+   target_compile_definitions(${TARGET_OP_LITE} PRIVATE OP_LITE_STATIC_LIBRARY)
+endif()
+
 target_compile_definitions(${TARGET_OP_LITE} PRIVATE OP_LITE_IMPLEMENTATION)
 target_compile_definitions(${TARGET_OP_LITE} PRIVATE SQLITE_ENABLE_COLUMN_METADATA)
 target_compile_definitions(${TARGET_OP_LITE} PRIVATE HAVE_USLEEP)
