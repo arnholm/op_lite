@@ -128,7 +128,8 @@ set_source_files_properties( miniz/miniz.c PROPERTIES HEADER_FILE_ONLY TRUE)
 
 add_library(${TARGET_OP_LITE} "")
 
-if (NOT BUILD_SHARED_LIB)
+get_target_property(target_type ${TARGET_OP_LITE} TYPE)
+if (target_type STREQUAL STATIC_LIBRARY)
    target_compile_definitions(${TARGET_OP_LITE} PRIVATE OP_LITE_STATIC_LIBRARY)
 endif()
 
