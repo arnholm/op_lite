@@ -31,7 +31,6 @@ conan install ../.. -s build_type=Debug
 #
 # CMake generate, build and install
 #
-cd build/debug
 cmake ../.. -DCMAKE_BUILD_TYPE=Debug
 cmake --build   . --verbose
 cmake --install . --verbose
