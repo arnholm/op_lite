@@ -171,7 +171,8 @@ target_include_directories(${TARGET_OP_LITE}
    ${CONAN_INCLUDE_DIRS_MSGPACK}
 )
 
-target_link_libraries(${TARGET_OP_LITE} Boost::disable_autolinking)
+message(STATUS "CMAKE_DL_LIBS: ${CMAKE_DL_LIBS}")
+target_link_libraries(${TARGET_OP_LITE} ${CMAKE_DL_LIBS} Boost::disable_autolinking)
 
 #--------------------------------------------------------------------------------
 # Installation
