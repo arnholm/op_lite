@@ -200,6 +200,7 @@ endif()
 # Build
 #--------------------------------------------------------------------------------
 
+message(STATUS "Building STATIC library ${TARGET_CE_ANGELSCRIPT}")
 add_library(${TARGET_CE_ANGELSCRIPT} STATIC
     ${ANGELSCRIPT_SOURCE}
     ${ANGELSCRIPT_HEADERS}

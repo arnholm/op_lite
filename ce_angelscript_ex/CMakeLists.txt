@@ -51,6 +51,7 @@ source_group(iostream   FILES ${_IOSTREAM_SOURCE})
 
 find_package(Threads)
 
+message(STATUS "Building STATIC library ${TARGET_CE_ANGELSCRIPT_EX}")
 add_library(${TARGET_CE_ANGELSCRIPT_EX} STATIC "")
 
 target_compile_definitions(${TARGET_CE_ANGELSCRIPT_EX} PRIVATE CE_ANGELSCRIPT_EX_IMPLEMENTATION)

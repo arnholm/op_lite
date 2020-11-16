@@ -53,13 +53,14 @@ find_package("Boost" REQUIRED)
 find_package("msgpack" QUIET)
 
 #--------------------------------------------------------------------------------
-# Name the targets. Used to reference libraries in 
+# Name the targets. This can be used to override default names
+# given in the subdirectories.
 #--------------------------------------------------------------------------------
 set(TARGET_CF_SYSLIB          "cf_syslib")
-set(TARGET_CF_SERIAL          "cf_serial_static")
+set(TARGET_CF_SERIAL          "cf_serial")
 set(TARGET_OP_LITE            "op_lite")
-set(TARGET_CE_ANGELSCRIPT     "ce_angelscript_static")
-set(TARGET_CE_ANGELSCRIPT_EX  "ce_angelscript_ex_static")
+set(TARGET_CE_ANGELSCRIPT     "ce_angelscript")
+set(TARGET_CE_ANGELSCRIPT_EX  "ce_angelscript_ex")
 
 #--------------------------------------------------------------------------------
 # Define sub-projects. Add sub directories, one for each target.

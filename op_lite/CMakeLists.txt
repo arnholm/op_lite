@@ -130,7 +130,10 @@ add_library(${TARGET_OP_LITE} "")
 
 get_target_property(target_type ${TARGET_OP_LITE} TYPE)
 if (target_type STREQUAL STATIC_LIBRARY)
+   message(STATUS "Building STATIC library ${TARGET_CF_SERIAL}")
    target_compile_definitions(${TARGET_OP_LITE} PRIVATE OP_LITE_STATIC_LIBRARY)
+else()
+   message(STATUS "Building SHARED library ${TARGET_CF_SERIAL}")
 endif()
 
 target_compile_definitions(${TARGET_OP_LITE} PRIVATE OP_LITE_IMPLEMENTATION)

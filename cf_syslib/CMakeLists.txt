@@ -28,7 +28,8 @@ set(SOURCE_FILES
    xml_tree.cpp
 )
 
-add_library(${TARGET_CF_SYSLIB} ${SOURCE_FILES} ${PUBLIC_HEAD_FILES})
+message(STATUS "Building SHARED library ${TARGET_CF_SERIAL}")
+add_library(${TARGET_CF_SYSLIB} SHARED ${SOURCE_FILES} ${PUBLIC_HEAD_FILES})
 
 target_compile_definitions(${TARGET_CF_SYSLIB} PRIVATE CF_SYSLIB_IMPLEMENTATION)
 

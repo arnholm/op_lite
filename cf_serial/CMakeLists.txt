@@ -23,6 +23,7 @@ set(SOURCE_FILES
 )
 
 # cf_serial library is only offered as static
+message(STATUS "Building STATIC library ${TARGET_CF_SERIAL}")
 add_library(${TARGET_CF_SERIAL} STATIC
    ${SOURCE_FILES} ${PUBLIC_HEAD_FILES}
    cf_serial_config.h
