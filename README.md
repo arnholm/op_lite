@@ -15,3 +15,8 @@ The follwing libraries are included
 | ce_angelscript        |  CPDE adaption of https://www.angelcode.com/angelscript/ |
 | ce_angelscript_ex     |  CPDE extension library to  Angelscript |
 | cf_syslib             |  CPDE System library with commonly used classes/functions |
+
+## Building cpde_syslibs
+The primary build system is based on Code::Blocks. However, the project files are dependent on following the CPDE conventions.
+Alternatively, CMake and Conan can be used. See [README_CMake.md](./buildsystem/README_CMake.md).
+
